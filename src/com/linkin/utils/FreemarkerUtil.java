@@ -7,16 +7,17 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import templates.ResourceHolder;
+
 import com.linkin.models.Querys;
 import com.linkin.models.Table;
 
-import templates.ResourceHolder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class FreemarkerUtil {
-	
+
 	public static void output(Table... tables) {
 		for (Table table : tables) {
 			output(table);
@@ -82,6 +83,7 @@ public class FreemarkerUtil {
 
 	private static String outputPath(String fileName) {
 		return StringUtil.substringBetween(ResourceHolder.path2(), "file:/",
-				"/Freemarker") + "/Freemarker/output/MysqlMapper/" + fileName;
+				"/mybatis-Mapper-generator")
+				+ "/mybatis-Mapper-generator/output/MysqlMapper/" + fileName;
 	}
 }
