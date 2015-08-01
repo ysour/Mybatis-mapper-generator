@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="EquipmentMapper">
+
+	<resultMap type="Equipment" id="equipmentResultMap">
+		<id property="id" column="id" />
+        <result property="equipmentName" column="equipment_name" />
+        <result property="userId" column="user_id" />
+        <result property="adminId" column="admin_id" />
+	</resultMap>
+	
+	<association property="admin" javaType="User"
+			columnPrefix="user0_" resultMap="UserMapper.userResultMap" />
+	<association property="owner" javaType="User"
+			columnPrefix="user1_" resultMap="UserMapper.userResultMap" />
+	
+	<select id="findById" parameterType="String" resultMap="equipmentResultMap">
+		select id, equipment_name, user_id, admin_id
+		from equipment
+		where equipment.id = #{id}
+	</select>
+	
+	<select id="listAll" resultMap="equipmentResultMap">
+		select id, equipment_name, user_id, admin_id
+		from equipment
+	</select>
+	
+	<update id="insertOrUpdate" parameterType="Equipment">
+		SET FOREIGN_KEY_CHECKS = 0;
+		replace into equipment set
+		id=#{id}, equipment_name=#{equipmentName}, user_id=#{userId}, admin_id=#{adminId};
+		SET FOREIGN_KEY_CHECKS = 1;
+	</update>
+	
+	<update id="batchInsertOrUpdate" parameterType="Equipment">
+		SET FOREIGN_KEY_CHECKS = 0;
+		<foreach collection="equipments" item="Equipment?uncap_first" separator=";" index="index">
+		replace into equipment set id=#{equipment.id}, equipment_name=#{Equipment.equipmentName}, user_id=#{Equipment.userId}, admin_id=#{Equipment.adminId};
+		</foreach>
+		SET FOREIGN_KEY_CHECKS = 1;
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		delete from equipment
+		where equipment.id = #{id}
+	</delete>
+	
+	<delete id="batchDelete" parameterType="String">
+		delete from equipment
+		where equipment.id in <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">#{id}</foreach>
+	</delete>
+	
+	<select id="countAll" resultType="long">
+		select count(*) from equipment
+	</select>
+	
+	<select id="query0" resultMap="equipmentResultMap">
+		select 
+		id, equipment_name, user_id, admin_id
+		, user1.id as user1_id
+		, user1.name as user1_name, user1.avatar_id as user1_avatar_id
+		from equipment
+		left join user user1 on equipment.user_id = user1.id
+		where 1=1
+		<if test="userId != null">
+		and equipment.user_id = #{userId}
+		</if>
+		<if test="orderSortName != null &amp;&amp; orderAsc != null">
+			order by user.${orderSortName}
+			<choose>
+				<when test="orderAsc == true">
+					asc
+				</when>
+				<otherwise>
+					desc
+				</otherwise>
+			</choose>
+		</if>
+		<if test="offset != null &amp;&amp; limit != null">
+			limit ${offset},${limit}
+		</if>
+	</select>
+	
+	<select id="query1" resultType="long">
+		select 
+		count(equipment.id)
+		from equipment
+		left join user user1 on equipment.user_id = user1.id
+		left join user user0 on equipment.admin_id = user0.id
+		where 1=1
+		<if test="equipmentName != null">
+		and equipment.equipment_name like concat('%',#{equipmentName},'%')
+		</if>
+		<if test="avatar != null">
+		and user1.avatar_id like concat('%',#{avatar},'%')
+		</if>
+		<if test="name != null">
+		and user0.name like concat('%',#{name},'%')
+		</if>
+	</select>
+	
+	<select id="queryByEquipmentName" resultMap="equipmentResultMap">
+		select 
+		id, equipment_name, user_id, admin_id
+		from equipment
+		where 1=1
+		<if test="equipmentName != null">
+		and equipment.equipment_name like concat('%',#{equipmentName},'%')
+		</if>
+		<if test="orderSortName != null &amp;&amp; orderAsc != null">
+			order by user.${orderSortName}
+			<choose>
+				<when test="orderAsc == true">
+					asc
+				</when>
+				<otherwise>
+					desc
+				</otherwise>
+			</choose>
+		</if>
+		<if test="offset != null &amp;&amp; limit != null">
+			limit ${offset},${limit}
+		</if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+
+	<resultMap type="User" id="userResultMap">
+		<id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="avatar" column="avatar_id" />
+	</resultMap>
+	
+	
+	<select id="findById" parameterType="String" resultMap="userResultMap">
+		select id, name, avatar_id
+		from user
+		where user.id = #{id}
+	</select>
+	
+	<select id="listAll" resultMap="userResultMap">
+		select id, name, avatar_id
+		from user
+	</select>
+	
+	<update id="insertOrUpdate" parameterType="User">
+		SET FOREIGN_KEY_CHECKS = 0;
+		replace into user set
+		id=#{id}, name=#{name}, avatar_id=#{avatar};
+		SET FOREIGN_KEY_CHECKS = 1;
+	</update>
+	
+	<update id="batchInsertOrUpdate" parameterType="User">
+		SET FOREIGN_KEY_CHECKS = 0;
+		<foreach collection="users" item="User?uncap_first" separator=";" index="index">
+		replace into user set id=#{user.id}, name=#{User.name}, avatar_id=#{User.avatar};
+		</foreach>
+		SET FOREIGN_KEY_CHECKS = 1;
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		delete from user
+		where user.id = #{id}
+	</delete>
+	
+	<delete id="batchDelete" parameterType="String">
+		delete from user
+		where user.id in <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">#{id}</foreach>
+	</delete>
+	
+	<select id="countAll" resultType="long">
+		select count(*) from user
+	</select>
+	
+</mapper>
