@@ -1,7 +1,7 @@
 package com.linkin.utils;
 
 /**
- * String工具类，包含大量通用方法
+ * String工具类
  * 
  * @author Alex Huang
  * @email huangyu407@qq.com
