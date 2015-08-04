@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="${table.entityName}Mapper">
+<mapper namespace="${table.packageName}.mappers.${table.entityName}Mapper">
 
 	<resultMap type="${table.entityName}" id="${table.entityName?uncap_first}ResultMap">
 		<id property="${table.pkColumn.name}" column="${table.pkColumn.dbName}" />
@@ -9,14 +9,13 @@
         <result property="${column.name}" column="${column.dbName}" />
        	</#list>
        	</#if>
+       	<#if (associations)??>
+		<#list associations as association>
+		<association property="${association.property}" javaType="${association.aTable.entityName}"
+				columnPrefix="${association.alias}_" resultMap="${association.aTable.packageName}.mappers.${association.aTable.entityName}Mapper.${association.aTable.entityName?uncap_first}ResultMap" />
+		</#list>
+		</#if>
 	</resultMap>
-	
-	<#if (associations)??>
-	<#list associations as association>
-	<association property="${association.property}" javaType="${association.aTable.entityName}"
-			columnPrefix="${association.alias}_" resultMap="${association.aTable.entityName}Mapper.${association.aTable.entityName?uncap_first}ResultMap" />
-	</#list>
-	</#if>
 	
 	<select id="findById" parameterType="${table.pkColumn.classType}" resultMap="${table.entityName?uncap_first}ResultMap">
 		select ${table.pkColumn.dbName}<#if (table.columns)??><#list table.columns as column>, ${column.dbName}</#list></#if>
