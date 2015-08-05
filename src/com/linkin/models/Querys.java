@@ -18,6 +18,7 @@ public class Querys {
 		private Map<String, Association> associationsMap;
 		private List<Condition> conditions;
 		private String funcName;
+		private boolean listReturn;
 		private boolean count;
 		private boolean needOrderBy;
 		private boolean needPaging;
@@ -75,6 +76,14 @@ public class Querys {
 
 		public void setFuncName(String funcName) {
 			this.funcName = funcName;
+		}
+
+		public boolean isListReturn() {
+			return listReturn;
+		}
+
+		public void setListReturn(boolean listReturn) {
+			this.listReturn = listReturn;
 		}
 
 		public boolean isCount() {
