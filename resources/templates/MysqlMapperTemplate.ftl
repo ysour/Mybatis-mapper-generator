@@ -102,7 +102,7 @@
 		<#if (!query.count)>
 		<#if (query.needOrderBy)>
 		<if test="${r"orderSortName != null &amp;&amp; orderAsc != null"}">
-			order by user.${r"${orderSortName}"}
+			order by ${table.tableName}.${r"${orderSortName}"}
 			<choose>
 				<when test="${r"orderAsc == true"}">
 					asc
